@@ -1,6 +1,220 @@
-def main():
-    print("Hello from opengamma!")
+import requests
+import json
+import subprocess
+import sys
+import re
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
+key = os.getenv('OPENROUTER_KEY')
+model = "openai/gpt-oss-20b:free"
+model = "kwaipilot/kat-coder-pro:free"
+
+prompt = """**Презентация: Виды кофе из Италии**  
+*(максимум 10 слайдов)*  
+
+---
+
+### Слайд 1 – Титульный
+**Виды кофе из Италии**  
+*Краткое введение*  
+- Название презентации  
+- Имя докладчика (или «@gamma_gpt_bot»)  
+- Дата  
+
+---
+
+### Слайд 2 – Итальянская кофейная культура  
+- История кофе в Италии (начало 16–17 с)  
+- Кофе как часть быта и социальной жизни  
+- Основные правила сервировки: «Малая чашка», «крепкий»  
+- Пунктуальность: «по 1–2 минуты»  
+
+---
+
+### Слайд 3 – Эспрессо (Espresso)  
+- Короткообжаренный кофе, экстракция 25–30 с  
+- Винтажная «большая» зерновая (Arbata, Roma)  
+- Цель: насыщенный, концентрированный вкус  
+- Типичные образы: «пика дней»  
+
+---
+
+### Слайд 4 – Ристретто (Ristretto)  
+- 1/3 от объёма эспрессо (≈20 мл)  
+- Короткая экстракция – 15–20 с  
+- Стилизованный «чужой» вкус (сладко‑крепкий)  
+- Лучший выбор для «особого» кофе  
+
+---
+
+### Слайд 5 – Лунго (Lungo)  
+- Долгий экстрактивный (≈60 мл)  
+- Охлаждение вкуса, более горьковатый  
+- Идеальный для «завтрак» в неформальной обстановке  
+
+---
+
+### Слайд 6 – Кафэ Макчиато (Caffè Macchiato)  
+- Эспрессо «запятнанный» (macchiato) небольшим количеством молока  
+- Сильный кофе, но «плавный» конец  
+- Популяризация методом «моски»  
+
+---
+
+### Слайд 7 – Кафэ Латте (Caffè Latte)  
+- Эспрессо + 150–200 мл парного молока  
+- Фазеры чёрной и белой коронки  
+- Популярно в кэйп-канцелярских заведениях  
+
+---
+
+### Слайд 8 – Крайто (Cortado)  
+- 1:1 кофе‑молоко (молоко слегка охлажденное)  
+- Стиль «мелкая чашка» (50–70 мл)  
+- Сочетание эспрессо и молочной мягкости  
+
+---
+
+### Слайд 9 – Специалитеты  
+| Вариант | Обзор |
+|---------|-------|
+| Марокконо (Marocchino) | Эспрессо + какао + молоко в небольших процентах |
+| Флаво (Caffè Frappe) | Горячий мятный суперводом, чем пряный кофе |
+| Калдеро в Шотландии | Алкоголь, рисменый «венок» |
+
+---
+
+### Слайд 10 – Итоги и рекомендации  
+- **Выбор зерен**: классические – «Roma», «Moka».  
+- **Экстракция**: контроль времени – 25‑30 с.  
+- **Подача**: правильно отформатируйте чашу (1,5‑2 чашки).  
+- **Совет**: попробуйте эспрессо + 1% молока перед переходом к разливу.  
+
+---"""
+
+def generate_script():
+    system_prompt = f"""
+Write a complete Python script using the python-pptx library to create a PowerPoint presentation (PPTX).
+The script must:
+- Use appropriate slide layouts (e.g., title slide, bullet slide).
+- Save the presentation to a file named 'test.pptx'.
+Output ONLY the Python code as plain text, without markdown, code block markers (e.g., ` + "```" + `python)
+
+Example:
+from pptx import Presentation
+from pptx.util import Inches
+
+prs = Presentation()
+title_slide_layout = prs.slide_layouts[0]
+slide = prs.slides.add_slide(title_slide_layout)
+title = slide.shapes.title
+subtitle = slide.placeholders[1]
+
+title.text = "Hello, World!"
+subtitle.text = "python-pptx was here!"
+
+title_only_slide_layout = prs.slide_layouts[5]
+slide = prs.slides.add_slide(title_only_slide_layout)
+shapes = slide.shapes
+
+shapes.title.text = 'Adding a Table'
+
+rows = cols = 2
+left = top = Inches(2.0)
+width = Inches(6.0)
+height = Inches(0.8)
+
+table = shapes.add_table(rows, cols, left, top, width, height).table
+
+# set column widths
+table.columns[0].width = Inches(2.0)
+table.columns[1].width = Inches(4.0)
+
+# write column headings
+table.cell(0, 0).text = 'Foo'
+table.cell(0, 1).text = 'Bar'
+
+# write body cells
+table.cell(1, 0).text = 'Baz'
+table.cell(1, 1).text = 'Qux'
+
+
+bullet_slide_layout = prs.slide_layouts[1]
+
+slide = prs.slides.add_slide(bullet_slide_layout)
+shapes = slide.shapes
+
+title_shape = shapes.title
+body_shape = shapes.placeholders[1]
+
+title_shape.text = 'Adding a Bullet Slide'
+
+tf = body_shape.text_frame
+tf.text = 'Find the bullet slide layout'
+
+p = tf.add_paragraph()
+p.text = 'Use _TextFrame.text for first bullet'
+p.level = 1
+
+p = tf.add_paragraph()
+p.text = 'Use _TextFrame.add_paragraph() for subsequent bullets'
+p.level = 2
+
+prs.save('test.pptx')"""
+
+    url = "https://openrouter.ai/api/v1/chat/completions"
+    payload = {
+        "model": model,
+        "messages": [
+		{"role": "system", "content": system_prompt},
+		{"role": "user", "content": prompt},
+	],
+        "stream": False
+    }
+    headers = {
+        "Authorization": f"Bearer {key}",
+    }
+
+    try:
+        response = requests.post(url, json=payload, headers=headers)
+        response.raise_for_status()
+        result = response.json()
+        generated_code = result["choices"][0]["message"]["content"].strip()
+
+        if not generated_code:
+            raise ValueError("No code generated by Ollama.")
+
+        # Clean up any code block markers or unwanted markdown
+        generated_code = re.sub(r'```python\n|```', '', generated_code).strip()
+
+        print(generated_code)
+
+        return generated_code
+
+    except requests.exceptions.RequestException as e:
+        response_text = response.text
+        print(response_text)
+        print(f"Error connecting: {e}")
+        sys.exit(1)
+    except ValueError as e:
+        print(f"Error: {e}")
+        sys.exit(1)
+
+def execute_generated_script(script):
+    with open(".script.py", "w") as f:
+        f.write(script)
+    try:
+        # Execute the generated script using subprocess
+        result = subprocess.run(["uv", "run", ".script.py"], capture_output=True, text=True)
+        if result.returncode == 0:
+            print(f"Presentation generated successfully as 'test.pptx'")
+        else:
+            print(f"Error executing generated script:\n{result.stderr}")
+    except Exception as e:
+        print(f"Error running script: {e}")
 
 if __name__ == "__main__":
-    main()
+    script = generate_script()
+    execute_generated_script(script)

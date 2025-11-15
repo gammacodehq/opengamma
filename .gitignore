@@ -1,0 +1,6 @@
+.env
+.DS_Store
+pycache
+
+.script.py
+test.pptx
