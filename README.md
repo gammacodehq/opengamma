@@ -1,6 +1,9 @@
 # opengamma
 
 ## Setup
+
+[install uv](https://docs.astral.sh/uv/getting-started/installation/)
+
 ```
 uv sync
 ```
