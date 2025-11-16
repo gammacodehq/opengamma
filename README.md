@@ -19,6 +19,11 @@ OPENROUTER_KEY=sk-or-v1-49ac5ecb95d4abb9f785f660d06b7bdebb95abb45d59006fd33365fc
 uv run main.py
 ```
 
+To enable logging:
+```
+uv run main.py --log
+```
+
 ## Experiments
 
 1. Models:
