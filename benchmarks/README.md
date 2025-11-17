@@ -27,3 +27,9 @@ log.json example
   }
 }
 ```
+
+We do have same logs at prompt benchmark that is run by the command
+
+```bash
+uv run benchmarks/prompt_benchmark.py
+```
