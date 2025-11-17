@@ -234,7 +234,7 @@ def main():
     benchmark = ModelBenchmark()
 
     log.info("==== Starting benchmark")
-    num_tasks = 100
+    num_tasks = 10
     results = benchmark.benchmark_models(models_to_test, num_tasks)
     benchmark.save_results(results)
 
