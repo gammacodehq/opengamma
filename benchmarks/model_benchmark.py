@@ -12,6 +12,75 @@ import time
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 log = logging.getLogger(__name__)
 
+system_prompt = f"""
+Write a complete Python script using the python-pptx library to create a PowerPoint presentation (PPTX).
+The script must:
+- Use appropriate slide layouts (e.g., title slide, bullet slide).
+- Save the presentation to a file named 'test.pptx'.
+Output ONLY the Python code as plain text, without markdown, code block markers (e.g., ` + "```" + `python)
+
+Example:
+from pptx import Presentation
+from pptx.util import Inches
+
+prs = Presentation()
+title_slide_layout = prs.slide_layouts[0]
+slide = prs.slides.add_slide(title_slide_layout)
+title = slide.shapes.title
+subtitle = slide.placeholders[1]
+
+title.text = "Hello, World!"
+subtitle.text = "python-pptx was here!"
+
+title_only_slide_layout = prs.slide_layouts[5]
+slide = prs.slides.add_slide(title_only_slide_layout)
+shapes = slide.shapes
+
+shapes.title.text = 'Adding a Table'
+
+rows = cols = 2
+left = top = Inches(2.0)
+width = Inches(6.0)
+height = Inches(0.8)
+
+table = shapes.add_table(rows, cols, left, top, width, height).table
+
+# set column widths
+table.columns[0].width = Inches(2.0)
+table.columns[1].width = Inches(4.0)
+
+# write column headings
+table.cell(0, 0).text = 'Foo'
+table.cell(0, 1).text = 'Bar'
+
+# write body cells
+table.cell(1, 0).text = 'Baz'
+table.cell(1, 1).text = 'Qux'
+
+
+bullet_slide_layout = prs.slide_layouts[1]
+
+slide = prs.slides.add_slide(bullet_slide_layout)
+shapes = slide.shapes
+
+title_shape = shapes.title
+body_shape = shapes.placeholders[1]
+
+title_shape.text = 'Adding a Bullet Slide'
+
+tf = body_shape.text_frame
+tf.text = 'Find the bullet slide layout'
+
+p = tf.add_paragraph()
+p.text = 'Use _TextFrame.text for first bullet'
+p.level = 1
+
+p = tf.add_paragraph()
+p.text = 'Use _TextFrame.add_paragraph() for subsequent bullets'
+p.level = 2
+
+prs.save('test.pptx')"""
+
 class ModelBenchmark:
     def __init__(self, system_prompt=None):
         self.system_prompt = system_prompt or self.get_default_prompt()
@@ -21,30 +90,7 @@ class ModelBenchmark:
     
     # Возвращием промпт для тестинга
     def get_default_prompt(self):
-        return """Generate Python code for python-pptx presentation. OUTPUT MUST BE PURE PYTHON CODE ONLY.
-
-                CRITICAL:
-                - NO comments (# comment)
-                - NO explanations
-                - NO markdown (```python or ```)
-                - NO text outside code
-                - NO example usage
-                - NO instructions
-
-                REQUIREMENTS:
-                - Use python-pptx
-                - Create multiple slides with different layouts  
-                - Save as 'test.pptx'
-                - Code must run without errors
-
-                VALID OUTPUT EXAMPLE:
-                from pptx import Presentation
-                prs = Presentation()
-                slide = prs.slides.add_slide(prs.slide_layouts[0])
-                slide.shapes.title.text = "Title"
-                prs.save('test.pptx')
-
-                NOW GENERATE PURE PYTHON CODE:"""
+        return system_prompt
     
     # Непосредственно бенчмарк
     def benchmark_models(self, models, num_tasks=20):        
@@ -130,16 +176,9 @@ class ModelBenchmark:
 def main():    
     # Список моделей для тестирования
     models_to_test = [
-        "openai/gpt-oss-20b:free",
-        "nvidia/nemotron-nano-12b-v2-vl:free", 
-        "kwaipilot/kat-coder-pro:free",
-        "meta-llama/llama-3.3-70b-instruct:free",
-        "google/gemma-2-9b-it:free",
-        "microsoft/wizardlm-2-8x22b:free",
-        "qwen/qwen-2.5-72b-instruct:free",
-        "anthropic/claude-3.5-sonnet:free",
-        "mistralai/mistral-7b-instruct:free",
-        "cognitivecomputations/dolphin-2.9-llama3-70b:free",
+        "openai/gpt-oss-20b", # Current
+        "x-ai/grok-code-fast-1", # #1 in Programming on openrouter
+        "ibm-granite/granite-4.0-h-micro", # Cheaper and newer than gpt-oss-20b
     ]
     
     benchmark = ModelBenchmark()
