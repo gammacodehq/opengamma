@@ -1,22 +1,18 @@
 import os
 import sys
-
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-import time
+from datasets import load_dataset
+from datetime import datetime
 import json
 import logging
-from datetime import datetime
-from pathlib import Path
-from datasets import load_dataset
 from model import invoke_func
+from pathlib import Path
+import time
 
-# Настраиваем логирование
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 log = logging.getLogger(__name__)
 
 class ModelBenchmark:
-    # Инициализация
     def __init__(self, system_prompt=None):
         self.system_prompt = system_prompt or self.get_default_prompt()
         self.dataset = load_dataset("mikeoxmaul/opengamma-prs", streaming=True)
@@ -132,18 +128,24 @@ class ModelBenchmark:
     
 
 def main():    
-    # Список моделей для тестирования, если заработает надо добавить еще
+    # Список моделей для тестирования
     models_to_test = [
         "openai/gpt-oss-20b:free",
-        "nvidia/nemotron-nano-12b-v2-vl:free",
+        "nvidia/nemotron-nano-12b-v2-vl:free", 
         "kwaipilot/kat-coder-pro:free",
-        # TODO добавить еще модели
+        "meta-llama/llama-3.3-70b-instruct:free",
+        "google/gemma-2-9b-it:free",
+        "microsoft/wizardlm-2-8x22b:free",
+        "qwen/qwen-2.5-72b-instruct:free",
+        "anthropic/claude-3.5-sonnet:free",
+        "mistralai/mistral-7b-instruct:free",
+        "cognitivecomputations/dolphin-2.9-llama3-70b:free",
     ]
     
     benchmark = ModelBenchmark()
     
     log.info("==== Starting benchmark")
-    results = benchmark.benchmark_models(models_to_test, num_tasks=3) # TODO запустить на больше чем на 3 тасках
+    results = benchmark.benchmark_models(models_to_test, num_tasks=5)
     
     benchmark.save_results(results)
 
