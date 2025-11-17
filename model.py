@@ -15,6 +15,8 @@ def invoke_func(model, system_prompt, task):
     load_dotenv()
     key = os.getenv("OPENROUTER_KEY")
 
+    token_stats = {'prompt_tokens': 0, 'completion_tokens': 0, 'total_tokens': 0}
+
     url = "https://openrouter.ai/api/v1/chat/completions"
     payload = {
         "model": model,
@@ -37,7 +39,7 @@ def invoke_func(model, system_prompt, task):
         generated_code = result["choices"][0]["message"]["content"].strip()
 
         if not generated_code:
-            return 0
+            return 0, token_stats
 
         # Clean up any code block markers or unwanted markdown
         generated_code = re.sub(r"```python\n|```", "", generated_code).strip()
@@ -46,6 +48,11 @@ def invoke_func(model, system_prompt, task):
         log.info(f"Generation took {end_time - start_time:.2f} seconds")
         if "usage" in result:
             usage = result["usage"]
+            token_stats = {
+                'prompt_tokens': usage.get('prompt_tokens', 0),
+                'completion_tokens': usage.get('completion_tokens', 0), 
+                'total_tokens': usage.get('total_tokens', 0)
+            }
             log.info(
                 f"Tokens used: prompt {usage.get('prompt_tokens', 0)}, completion {usage.get('completion_tokens', 0)}, total {usage.get('total_tokens', 0)}"
             )
@@ -62,19 +69,19 @@ def invoke_func(model, system_prompt, task):
             if result.returncode == 0:
                 log.info("Presentation generated successfully as 'test.pptx'")
                 if os.path.exists("test.pptx"):
-                    return 1
+                    return 1, token_stats
                 else:
-                    return 0
+                    return 0, token_stats
             else:
                 log.error(f"Error executing generated script:\n{result.stderr}")
-                return 0
+                return 0, token_stats
         except Exception as e:
             log.error(f"Error running script: {e}")
-            return 0
+            return 0, token_stats
 
     except requests.exceptions.RequestException as e:
         log.error(f"Error connecting: {e}")
-        return 0
+        return 0, token_stats
     except ValueError as e:
         log.error(f"Error: {e}")
-        return 0
+        return 0, token_stats
