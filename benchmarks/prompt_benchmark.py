@@ -190,7 +190,6 @@ def main():
     
     benchmark = PromptBenchmark(model=model)
     
-    # Получаем промпты для тестирования
     prompts = benchmark.get_prompts_to_test()
     
     log.info("==== Starting prompt benchmark")
