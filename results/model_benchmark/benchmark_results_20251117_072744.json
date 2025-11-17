@@ -1,0 +1,41 @@
+{
+  "openai/gpt-oss-20b:free": {
+    "success_rate": 1.0,
+    "success_count": 1,
+    "total_tasks": 1,
+    "avg_time": 19.766795873641968,
+    "total_time": 19.766795873641968,
+    "token_usage": {
+      "prompt_tokens": 2005,
+      "completion_tokens": 2853,
+      "total_tokens": 4858
+    },
+    "errors": []
+  },
+  "nvidia/nemotron-nano-12b-v2-vl:free": {
+    "success_rate": 0.0,
+    "success_count": 0,
+    "total_tasks": 1,
+    "avg_time": 39.92193102836609,
+    "total_time": 39.92193102836609,
+    "token_usage": {
+      "prompt_tokens": 2071,
+      "completion_tokens": 3487,
+      "total_tokens": 5558
+    },
+    "errors": []
+  },
+  "kwaipilot/kat-coder-pro:free": {
+    "success_rate": 1.0,
+    "success_count": 1,
+    "total_tasks": 1,
+    "avg_time": 28.295012712478638,
+    "total_time": 28.295012712478638,
+    "token_usage": {
+      "prompt_tokens": 2285,
+      "completion_tokens": 2346,
+      "total_tokens": 4631
+    },
+    "errors": []
+  }
+}

@@ -93,7 +93,7 @@ p.level = 2
 prs.save('test.pptx')"""
 
 if __name__ == "__main__":
-    result = invoke_func(model, system_prompt, task)
+    result, _ = invoke_func(model, system_prompt, task)
     if result == 1:
         print("Success")
     else:

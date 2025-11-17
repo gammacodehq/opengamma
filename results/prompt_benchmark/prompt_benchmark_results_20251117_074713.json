@@ -1,0 +1,58 @@
+{
+  "basic_prompt": {
+    "success_rate": 1.0,
+    "success_count": 1,
+    "total_tasks": 1,
+    "avg_time": 17.142990827560425,
+    "total_time": 17.142990827560425,
+    "token_usage": {
+      "prompt_tokens": 1952,
+      "completion_tokens": 3413,
+      "total_tokens": 5365
+    },
+    "prompt_length": 716,
+    "errors": []
+  },
+  "detailed_prompt": {
+    "success_rate": 1.0,
+    "success_count": 1,
+    "total_tasks": 1,
+    "avg_time": 11.260016441345215,
+    "total_time": 11.260016441345215,
+    "token_usage": {
+      "prompt_tokens": 2029,
+      "completion_tokens": 3049,
+      "total_tokens": 5078
+    },
+    "prompt_length": 1021,
+    "errors": []
+  },
+  "minimal_prompt": {
+    "success_rate": 0.0,
+    "success_count": 0,
+    "total_tasks": 1,
+    "avg_time": 31.659476041793823,
+    "total_time": 31.659476041793823,
+    "token_usage": {
+      "prompt_tokens": 1906,
+      "completion_tokens": 3907,
+      "total_tokens": 5813
+    },
+    "prompt_length": 382,
+    "errors": []
+  },
+  "structured_prompt": {
+    "success_rate": 1.0,
+    "success_count": 1,
+    "total_tasks": 1,
+    "avg_time": 12.250452041625977,
+    "total_time": 12.250452041625977,
+    "token_usage": {
+      "prompt_tokens": 1933,
+      "completion_tokens": 2257,
+      "total_tokens": 4190
+    },
+    "prompt_length": 511,
+    "errors": []
+  }
+}
