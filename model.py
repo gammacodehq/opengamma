@@ -11,17 +11,20 @@ import time
 log = logging.getLogger(__name__)
 
 
-def invoke_func(model, system_prompt, task):
+def invoke_func(model, system_prompt, task, id):
+    script_file = f".script_{id}.py"
+    pptx_file = f"test_{id}.pptx"
+
     load_dotenv()
     key = os.getenv("OPENROUTER_KEY")
 
-    token_stats = {'prompt_tokens': 0, 'completion_tokens': 0, 'total_tokens': 0}
+    token_stats = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
 
     url = "https://openrouter.ai/api/v1/chat/completions"
     payload = {
         "model": model,
         "messages": [
-            {"role": "system", "content": system_prompt},
+            {"role": "system", "content": system_prompt.replace("test.pptx", pptx_file)},
             {"role": "user", "content": task},
         ],
         "stream": False,
@@ -49,34 +52,40 @@ def invoke_func(model, system_prompt, task):
         if "usage" in result:
             usage = result["usage"]
             token_stats = {
-                'prompt_tokens': usage.get('prompt_tokens', 0),
-                'completion_tokens': usage.get('completion_tokens', 0), 
-                'total_tokens': usage.get('total_tokens', 0)
+                "prompt_tokens": usage.get("prompt_tokens", 0),
+                "completion_tokens": usage.get("completion_tokens", 0),
+                "total_tokens": usage.get("total_tokens", 0),
             }
             log.info(
                 f"Tokens used: prompt {usage.get('prompt_tokens', 0)}, completion {usage.get('completion_tokens', 0)}, total {usage.get('total_tokens', 0)}"
             )
 
-        if os.path.exists("test.pptx"):
-            os.remove("test.pptx")
+        if os.path.exists(pptx_file):
+            os.remove(pptx_file)
 
-        with open(".script.py", "w") as f:
+        with open(script_file, "w") as f:
             f.write(generated_code)
         try:
             result = subprocess.run(
-                ["uv", "run", ".script.py"], capture_output=True, text=True
+                ["uv", "run", script_file], capture_output=True, text=True
             )
             if result.returncode == 0:
                 log.info("Presentation generated successfully as 'test.pptx'")
-                if os.path.exists("test.pptx"):
+                if os.path.exists(pptx_file):
+                    os.remove(script_file)
+                    os.remove(pptx_file)
                     return 1, token_stats
                 else:
+                    os.remove(script_file)
                     return 0, token_stats
             else:
                 log.error(f"Error executing generated script:\n{result.stderr}")
+                os.remove(script_file)
                 return 0, token_stats
         except Exception as e:
             log.error(f"Error running script: {e}")
+            if os.path.exists(script_file):
+                os.remove(script_file)
             return 0, token_stats
 
     except requests.exceptions.RequestException as e:

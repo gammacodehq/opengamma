@@ -1,0 +1,41 @@
+{
+  "openai/gpt-oss-20b": {
+    "success_rate": 0.53,
+    "success_count": 53,
+    "total_tasks": 100,
+    "avg_time": 15.65505586385727,
+    "total_time": 1565.505586385727,
+    "token_usage": {
+      "prompt_tokens": 157932,
+      "completion_tokens": 249207,
+      "total_tokens": 407139
+    },
+    "errors": []
+  },
+  "x-ai/grok-code-fast-1": {
+    "success_rate": 0.79,
+    "success_count": 79,
+    "total_tasks": 100,
+    "avg_time": 15.559385182857513,
+    "total_time": 1555.9385182857513,
+    "token_usage": {
+      "prompt_tokens": 169905,
+      "completion_tokens": 251778,
+      "total_tokens": 421683
+    },
+    "errors": []
+  },
+  "ibm-granite/granite-4.0-h-micro": {
+    "success_rate": 0.61,
+    "success_count": 61,
+    "total_tasks": 100,
+    "avg_time": 30.89702611207962,
+    "total_time": 3089.702611207962,
+    "token_usage": {
+      "prompt_tokens": 196757,
+      "completion_tokens": 96486,
+      "total_tokens": 293243
+    },
+    "errors": []
+  }
+}
