@@ -96,7 +96,6 @@ class ModelBenchmark:
         self.results_dir.mkdir(parents=True, exist_ok=True)
         self.task_id = 0
 
-    # Возвращием промпт для тестинга
     def get_default_prompt(self):
         return system_prompt
 
@@ -124,24 +123,13 @@ class ModelBenchmark:
                 },
                 "error": str(e),
             }
-        except Exception as e:
-            return {
-                "success": False,
-                "time": 0,
-                "tokens": {
-                    "prompt_tokens": 0,
-                    "completion_tokens": 0,
-                    "total_tokens": 0,
-                },
-                "error": str(e),
-            }
 
     # Непосредственно бенчмарк
     def benchmark_models(self, models, num_tasks):
         results = {}
 
         for model_name in models:
-            log.info(f"==== Testing model: {model_name}")
+            log.info(f"Testing model: {model_name}")
 
             model_results = {
                 "success_count": 0,
@@ -180,7 +168,6 @@ class ModelBenchmark:
                     if "error" in res:
                         model_results["errors"].append(res["error"])
 
-            # Считаем метрки
             if model_results["total_tasks"] > 0:
                 model_results["success_rate"] = (
                     model_results["success_count"] / model_results["total_tasks"]
@@ -191,7 +178,7 @@ class ModelBenchmark:
 
             results[model_name] = model_results
             log.info(
-                f"==== Result {model_name}: SR={model_results.get('success_rate', 0):.1%}"
+                f"Result {model_name}: SR={model_results.get('success_rate', 0):.1%}"
             )
 
         return results
@@ -205,7 +192,6 @@ class ModelBenchmark:
 
         filepath = self.results_dir / filename
 
-        # Конвертируем в подходящий для json.dump формат
         serializable_results = {}
         for model, data in results.items():
             serializable_results[model] = {
@@ -221,7 +207,7 @@ class ModelBenchmark:
         with open(filepath, "w", encoding="utf-8") as f:
             json.dump(serializable_results, f, indent=2, ensure_ascii=False)
 
-        log.info(f"==== Results are saved in : {filepath}")
+        log.info(f"Results are saved in : {filepath}")
         return filepath
 
 def main():
@@ -233,7 +219,7 @@ def main():
 
     benchmark = ModelBenchmark()
 
-    log.info("==== Starting benchmark")
+    log.info("Starting benchmark")
     num_tasks = 10
     results = benchmark.benchmark_models(models_to_test, num_tasks)
     benchmark.save_results(results)
