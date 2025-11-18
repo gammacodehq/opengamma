@@ -844,7 +844,12 @@ dependencies = [
     { name = "python-pptx" },
     { name = "requests" },
     { name = "scikit-learn" },
+]
+
+[package.optional-dependencies]
+torch = [
     { name = "sentence-transformers" },
+    { name = "torch" },
 ]
 
 [package.metadata]
@@ -855,8 +860,10 @@ requires-dist = [
     { name = "python-pptx", specifier = ">=1.0.2" },
     { name = "requests", specifier = ">=2.32.5" },
     { name = "scikit-learn", specifier = ">=1.7.2" },
-    { name = "sentence-transformers", specifier = ">=5.1.2" },
+    { name = "sentence-transformers", marker = "extra == 'torch'", specifier = ">=5.1.2" },
+    { name = "torch", marker = "extra == 'torch'", specifier = ">=2.0.0" },
 ]
+provides-extras = ["torch"]
 
 [[package]]
 name = "packaging"

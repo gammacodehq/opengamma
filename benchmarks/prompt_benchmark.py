@@ -91,7 +91,7 @@ prs.save('test.pptx')"""
 class PromptBenchmark:
     def __init__(self, model="openai/gpt-oss-20b:free"):
         self.model = model
-        self.dataset = load_dataset("mikeoxmaul/opengamma-prs", streaming=True)
+        self.dataset = load_dataset("mikeoxmaul/opengamma-prs-dedup", streaming=True)
         self.results_dir = Path("results/prompt_benchmark")
         self.results_dir.mkdir(parents=True, exist_ok=True)
 
