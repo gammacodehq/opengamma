@@ -47,7 +47,7 @@ def invoke_func(model, system_prompt, task, id):
         # Clean up any code block markers or unwanted markdown
         generated_code = re.sub(r"```python\n|```", "", generated_code).strip()
 
-        log.info(f"Generated code {generated_code}")
+        # log.info(f"Generated code {generated_code}")
         log.info(f"Generation took {end_time - start_time:.2f} seconds")
         if "usage" in result:
             usage = result["usage"]

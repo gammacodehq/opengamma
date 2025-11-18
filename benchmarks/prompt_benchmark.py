@@ -16,6 +16,76 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
+
+system_prompt = f"""
+Write a complete Python script using the python-pptx library to create a PowerPoint presentation (PPTX).
+The script must:
+- Use appropriate slide layouts (e.g., title slide, bullet slide).
+- Save the presentation to a file named 'test.pptx'.
+Output ONLY the Python code as plain text, without markdown, code block markers (e.g., ` + "```" + `python)
+
+Example:
+from pptx import Presentation
+from pptx.util import Inches
+
+prs = Presentation()
+title_slide_layout = prs.slide_layouts[0]
+slide = prs.slides.add_slide(title_slide_layout)
+title = slide.shapes.title
+subtitle = slide.placeholders[1]
+
+title.text = "Hello, World!"
+subtitle.text = "python-pptx was here!"
+
+title_only_slide_layout = prs.slide_layouts[5]
+slide = prs.slides.add_slide(title_only_slide_layout)
+shapes = slide.shapes
+
+shapes.title.text = 'Adding a Table'
+
+rows = cols = 2
+left = top = Inches(2.0)
+width = Inches(6.0)
+height = Inches(0.8)
+
+table = shapes.add_table(rows, cols, left, top, width, height).table
+
+# set column widths
+table.columns[0].width = Inches(2.0)
+table.columns[1].width = Inches(4.0)
+
+# write column headings
+table.cell(0, 0).text = 'Foo'
+table.cell(0, 1).text = 'Bar'
+
+# write body cells
+table.cell(1, 0).text = 'Baz'
+table.cell(1, 1).text = 'Qux'
+
+
+bullet_slide_layout = prs.slide_layouts[1]
+
+slide = prs.slides.add_slide(bullet_slide_layout)
+shapes = slide.shapes
+
+title_shape = shapes.title
+body_shape = shapes.placeholders[1]
+
+title_shape.text = 'Adding a Bullet Slide'
+
+tf = body_shape.text_frame
+tf.text = 'Find the bullet slide layout'
+
+p = tf.add_paragraph()
+p.text = 'Use _TextFrame.text for first bullet'
+p.level = 1
+
+p = tf.add_paragraph()
+p.text = 'Use _TextFrame.add_paragraph() for subsequent bullets'
+p.level = 2
+
+prs.save('test.pptx')"""
+
 # Базовый промпт
 basic_prompt = f"""
 Generate Python code for python-pptx presentation. OUTPUT MUST BE PURE PYTHON CODE ONLY.
@@ -89,7 +159,7 @@ prs.save('test.pptx')"""
 
 
 class PromptBenchmark:
-    def __init__(self, model="openai/gpt-oss-20b:free"):
+    def __init__(self, model):
         self.model = model
         self.dataset = load_dataset("mikeoxmaul/opengamma-prs-dedup", streaming=True)
         self.results_dir = Path("results/prompt_benchmark")
@@ -97,6 +167,7 @@ class PromptBenchmark:
 
     def get_prompts_to_test(self):
         return {
+            "origina_prompt": system_prompt,
             "basic_prompt": basic_prompt,
             "detailed_prompt": detailed_prompt,
             "minimal_prompt": minimal_prompt,
@@ -115,6 +186,7 @@ class PromptBenchmark:
                 "success": result == 1,
                 "time": execution_time,
                 "tokens": token_stats,
+                "index": i,
             }
         except Exception as e:
             return {
@@ -146,6 +218,7 @@ class PromptBenchmark:
                 },
                 "errors": [],
                 "prompt_length": len(prompt_content),
+                "successful_indices": [],
             }
 
             tasks = list(self.dataset["train"].take(num_tasks))
@@ -171,6 +244,7 @@ class PromptBenchmark:
 
                     if res["success"]:
                         prompt_results["success_count"] += 1
+                        prompt_results["successful_indices"].append(res["index"])
                         log.info(f"Success ({res['time']:.2f}с)")
                     else:
                         log.info(f"Error ({res['time']:.2f}с)")
@@ -214,6 +288,7 @@ class PromptBenchmark:
                 "token_usage": data["token_usage"],
                 "prompt_length": data["prompt_length"],
                 "errors": data["errors"],
+                "successful_indices": data["successful_indices"],
             }
 
         with open(filepath, "w", encoding="utf-8") as f:
@@ -225,16 +300,16 @@ class PromptBenchmark:
 
 def main():
     # Используем лучшую модель из предыдущего бенчмарка
-    model = "openai/gpt-oss-20b:free"
+    model = "ibm-granite/granite-4.0-h-micro"
 
-    benchmark = PromptBenchmark(model=model)
+    benchmark = PromptBenchmark(model)
 
     prompts = benchmark.get_prompts_to_test()
 
     log.info("Starting prompt benchmark")
     results = benchmark.benchmark_prompts(
-        prompts, num_tasks=1
-    )  # TODO запустить на больше чем на 1 таске
+        prompts, num_tasks=5
+    )
 
     benchmark.save_results(results)
 
