@@ -61,7 +61,9 @@ uv run main.py --log
 1. Models:
 benchmark generation quality across different models
 
-2. Rag:
+![Model performace benchmark](https://raw.githubusercontent.com/gammacodehq/opengamma/refs/heads/main/model.png)
+
+3. Rag:
 change how system prompt is constructed in respect to prompt
 
 ## Metrics
@@ -70,7 +72,7 @@ SR - Success Rate
 Out of 100 presentation prompts how many produce valid running python?
 
 
-
+[code for charts](https://colab.research.google.com/drive/16x1sOSucMTyPPoUXwFm2sR3PKvcBoXJY?usp=sharing)
 
 ## Formal requirements
 
