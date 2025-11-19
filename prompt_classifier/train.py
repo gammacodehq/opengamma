@@ -9,6 +9,8 @@ load_dotenv()
 dataset = load_dataset("mikeoxmaul/opengamma-prs-dedup", streaming=True)
 tasks = list(dataset["train"].take(100))
 
+max_iter = 10
+
 @cache
 def get_embedding(index):
         text = tasks[index]["text"]
@@ -57,7 +59,7 @@ for idx in structured:
     X.append(emb)
     y.append(3)
 from sklearn.linear_model import LogisticRegression
-clf = LogisticRegression(max_iter=1000)
+clf = LogisticRegression(max_iter=max_iter)
 clf.fit(X, y)
 
 
