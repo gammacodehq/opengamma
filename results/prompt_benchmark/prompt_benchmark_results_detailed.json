@@ -1,0 +1,44 @@
+{
+  "detailed_prompt": {
+    "success_rate": 0.26,
+    "success_count": 26,
+    "total_tasks": 100,
+    "avg_time": 29.904160025119783,
+    "total_time": 2990.416002511978,
+    "token_usage": {
+      "prompt_tokens": 199010,
+      "completion_tokens": 89587,
+      "total_tokens": 288597
+    },
+    "prompt_length": 662,
+    "errors": [],
+    "successful_indices": [
+      4,
+      7,
+      10,
+      15,
+      23,
+      29,
+      30,
+      31,
+      35,
+      40,
+      41,
+      43,
+      44,
+      45,
+      46,
+      68,
+      79,
+      81,
+      82,
+      84,
+      85,
+      86,
+      92,
+      93,
+      95,
+      98
+    ]
+  }
+}

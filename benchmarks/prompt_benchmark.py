@@ -167,7 +167,7 @@ class PromptBenchmark:
 
     def get_prompts_to_test(self):
         return {
-            "origina_prompt": system_prompt,
+            "original_prompt": system_prompt,
             "basic_prompt": basic_prompt,
             "detailed_prompt": detailed_prompt,
             "minimal_prompt": minimal_prompt,
@@ -242,12 +242,13 @@ class PromptBenchmark:
                         "total_tokens"
                     ]
 
+                    log.info(f"Task {res["index"] + 1}/{num_tasks} complete")
                     if res["success"]:
                         prompt_results["success_count"] += 1
                         prompt_results["successful_indices"].append(res["index"])
-                        log.info(f"Success ({res['time']:.2f}с)")
+                        log.info(f"Success ({res['time']:.2f}s)")
                     else:
-                        log.info(f"Error ({res['time']:.2f}с)")
+                        log.info(f"Error ({res['time']:.2f}s)")
 
                     if "error" in res:
                         prompt_results["errors"].append(res["error"])
@@ -308,7 +309,7 @@ def main():
 
     log.info("Starting prompt benchmark")
     results = benchmark.benchmark_prompts(
-        prompts, num_tasks=5
+        prompts, num_tasks=100
     )
 
     benchmark.save_results(results)
