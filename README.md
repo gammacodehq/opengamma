@@ -63,8 +63,10 @@ benchmark generation quality across different models
 
 ![Model performace benchmark](https://raw.githubusercontent.com/gammacodehq/opengamma/refs/heads/main/model.png)
 
-3. Rag:
+2. Rag:
 change how system prompt is constructed in respect to prompt
+
+![Prompt performace benchmark](https://raw.githubusercontent.com/gammacodehq/opengamma/refs/heads/main/prompt.png)
 
 ## Metrics
 
