@@ -271,7 +271,6 @@ class PromptBenchmark:
 
     # Сохраняем результат в json в директорию results
     def save_results(self, results, filename=None):
-        """Сохраняет результаты в JSON"""
         if filename is None:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             filename = f"prompt_benchmark_results_{timestamp}.json"
@@ -308,9 +307,7 @@ def main():
     prompts = benchmark.get_prompts_to_test()
 
     log.info("Starting prompt benchmark")
-    results = benchmark.benchmark_prompts(
-        prompts, num_tasks=100
-    )
+    results = benchmark.benchmark_prompts(prompts, num_tasks=100)
 
     benchmark.save_results(results)
 

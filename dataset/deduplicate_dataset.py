@@ -3,7 +3,6 @@ import json
 import logging
 import numpy as np
 from pathlib import Path
-import sklearn
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -165,7 +164,7 @@ class DatasetDeduplicator:
 
 def main():
     deduplicator = DatasetDeduplicator()
-    deduplicator.run_deduplication(threshold=0.8)  # YOLO
+    deduplicator.run_deduplication(threshold=0.8)
 
 
 if __name__ == "__main__":

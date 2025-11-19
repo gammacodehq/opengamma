@@ -42,3 +42,9 @@ The dataset is created by:
 ## License
 
 MIT
+
+## Deduplication
+
+Dataset Deduplication
+
+The deduplication process identifies and removes near-duplicate tasks using semantic similarity. All dataset texts are converted into embeddings using the model paraphrase-multilingual-MiniLM-L12-v2. A cosine-similarity matrix is computed for all embedding pairs. The system estimates similarity statistics. A text is marked as a duplicate if its maximum similarity with any previously accepted text is greater than or equal to the threshold. Otherwise, it is kept.

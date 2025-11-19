@@ -1,16 +1,29 @@
 # Benchmarks
 
-## Model benchamrks
-To run a benchmark you should do all preparations from root README.md and then run
+## Model Benchmarks
+
+Model benchmarks evaluate how different models handle a fixed set of tasks. Each task is processed using a shared system prompt, and the benchmark records execution time, success rate, and token statistics for each model.
+
+Running the Model Benchmark
+
+Before running benchmarks, complete all setup steps described in the root README.md.
+
+After that, execute:
 
 ```bash
 uv run benchmarks/model_benchmark.py
 ```
 
-You would see logs in your terminal and final json benchmarks in results/model_benchmark/benchmark_results_YYYYMMDD_HHMMSS.json
+During execution, logs will appear in your terminal.
+Final results are saved as a JSON file in the directory:
 
-log.json example
+```bash
+results/model_benchmark/benchmark_results_YYYYMMDD_HHMMSS.json
 ```
+
+Example log.json:
+
+```bash
 {
   "openai/gpt-oss-20b:free": {
     "success_rate": 1.0,
@@ -28,8 +41,20 @@ log.json example
 }
 ```
 
-We do have same logs at prompt benchmark that is run by the command
+## Prompt Benchmarks
+
+Prompt benchmarks evaluate how different prompt formulations affect model performance. Instead of comparing models, this benchmark compares prompt templates when used with a single model.
+
+Running the Prompt Benchmark
+
+Use the following command:
 
 ```bash
 uv run benchmarks/prompt_benchmark.py
+```
+
+Results will be saved to:
+
+```bash
+results/prompt_benchmark/prompt_benchmark_results_YYYYMMDD_HHMMSS.json
 ```

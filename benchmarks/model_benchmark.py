@@ -1,5 +1,6 @@
 import os
 import sys
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from datasets import load_dataset
 from datetime import datetime
@@ -209,6 +210,7 @@ class ModelBenchmark:
 
         log.info(f"Results are saved in : {filepath}")
         return filepath
+
 
 def main():
     models_to_test = [
