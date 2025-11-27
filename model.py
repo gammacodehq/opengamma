@@ -72,11 +72,8 @@ def invoke_func(model, system_prompt, task, id):
             if result.returncode == 0:
                 log.info("Presentation generated successfully as 'test.pptx'")
                 if os.path.exists(pptx_file):
-                    os.remove(script_file)
-                    os.remove(pptx_file)
                     return 1, token_stats
                 else:
-                    os.remove(script_file)
                     return 0, token_stats
             else:
                 log.error(f"Error executing generated script:\n{result.stderr}")
